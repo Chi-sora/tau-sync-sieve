@@ -155,6 +155,18 @@ See `RELEASE_NOTES.md` for the initial release summary and verified finite check
 - `docs/05_tau_taxonomy.md`: complete tau taxonomy and label definitions
 - `docs/06_outputs_and_labels.md`: CSV output and label interpretation guide
 - `docs/07_classifier_and_parameters.md`: classifier flow, parameters, and residual cases
+- 
+## Additional technical notes
+
+The tau-sync sieve separates two execution ideas:
+
+* **Certificate mode**: reuses already verified tau, class labels, lapse facts, sync facts, and companion certificates for fast validation. For covered rows, this path does not call `is_prime(x)`.
+* **Parallel tau lanes**: splits tau processing into independent lanes, so endpoint, lapse, sync, nearend, and TWIN checks do not always wait for each other.
+
+For details, see:
+
+* [docs/08_certificate_mode_and_no_is_prime.md](docs/08_certificate_mode_and_no_is_prime.md)
+* [docs/09_parallel_tau_lanes.md](docs/09_parallel_tau_lanes.md)
 
 ## Important terminology
 
