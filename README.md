@@ -3,8 +3,8 @@
 Author: Chisora
 
 License:
-- Documentation and theory text: CC BY 4.0
-- Source code: MIT
+- Primary repository license: CC BY 4.0 for documentation, theory text, definitions, and explanatory material
+- Source code license: MIT for files in `src/` and `scripts/`
 
 ## What this repository contains
 
@@ -102,9 +102,8 @@ scripts\export_actual_values_windows.bat
 ```text
 README.md
 README.ja.md
-LICENSE.md
-LICENSE-CODE-MIT.txt
-LICENSE-DOCS-CC-BY-4.0.txt
+LICENSE
+CODE-LICENSE-MIT.txt
 CITATION.cff
 ACKNOWLEDGEMENTS.md
 src/
@@ -138,11 +137,13 @@ results/
 This repository uses a dual-license layout:
 
 ```text
-source code: MIT
-documentation and theory text: CC BY 4.0
+documentation, definitions, theory notes, and explanatory text: CC BY 4.0
+source code in src/ and scripts/: MIT
 ```
 
-See `LICENSE.md`, `LICENSE-CODE-MIT.txt`, and `LICENSE-DOCS-CC-BY-4.0.txt`.
+The root `LICENSE` file contains the full CC BY 4.0 legal code so that GitHub can detect the repository's primary license. The MIT source-code license is included in `CODE-LICENSE-MIT.txt`.
+See `RELEASE_NOTES.md` for the initial release summary and verified finite checks.
+
 
 
 ## Documentation

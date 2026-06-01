@@ -3,19 +3,21 @@
 著者: Chisora
 
 ライセンス:
-- 文書と理論説明: CC BY 4.0
-- ソースコード: MIT
+- repositoryの主ライセンス: 文書・理論説明・定義は CC BY 4.0
+- ソースコード: `src/` と `scripts/` は MIT
 
 ## ライセンス詳細
 
 このrepositoryは、ソースコードと文書でライセンスを分けています。
 
 ```text
-ソースコード: MIT
-文書・理論説明: CC BY 4.0
+文書・定義・理論説明: CC BY 4.0
+`src/` と `scripts/` のソースコード: MIT
 ```
 
-詳細は `LICENSE.md`, `LICENSE-CODE-MIT.txt`, `LICENSE-DOCS-CC-BY-4.0.txt` を見てください。
+root の `LICENSE` には GitHub が主ライセンスとして検出しやすいように CC BY 4.0 legalcode 全文だけを入れています。MIT のソースコードライセンス全文は `CODE-LICENSE-MIT.txt` を見てください。
+初回リリース内容と有限検証の要約は `RELEASE_NOTES.md` にあります。
+
 
 
 ## 概要
