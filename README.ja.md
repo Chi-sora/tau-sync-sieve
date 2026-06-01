@@ -134,6 +134,18 @@ docs/
 results/
 ```
 
+## 追加の技術メモ
+
+tau-sync sieve では、次の2つの実行方式を分けています。
+
+* **certificate mode**: 検証済みの tau, class label, lapse, sync, companion certificate を再利用して高速に検証する方式です。対象行が certificate で覆われている場合、`is_prime(x)` を呼びません。
+* **parallel tau lanes**: endpoint, lapse, sync, nearend, TWIN などを別々の lane として処理し、すべての tau の着火を互いに待たせない方式です。
+
+詳しくは次を参照してください。
+
+* [docs/08_certificate_mode_and_no_is_prime.md](docs/08_certificate_mode_and_no_is_prime.md)
+* [docs/09_parallel_tau_lanes.md](docs/09_parallel_tau_lanes.md)
+
 厳密定義や数式は `docs/` に分割しています。tau の細かい種類は `docs/05_tau_taxonomy.md` にまとめています。CSV列や出力の読み方は `docs/06_outputs_and_labels.md` にあります。分類器、パラメータ、残余ケースは `docs/07_classifier_and_parameters.md` にあります。
 
 ## 誤解しやすい点
