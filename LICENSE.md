@@ -27,7 +27,7 @@ International (CC BY 4.0), unless otherwise noted.
 See:
 
 ```text
-LICENSE-DOCS-CC-BY-4.0.txt
+LICENSE-CC-BY-4.0.txt
 ```
 
 SPDX identifier:
