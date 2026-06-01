@@ -1,0 +1,13 @@
+section,metric,value
+input,source_rows,172364
+unique,all,172364
+tau,prime,110734
+tau,semiprime,29151
+tau,almost_prime,32479
+standard,prime,110734
+standard,semiprime,29151
+standard,almost_prime,32479
+check,mismatch,0
+twin,prime_x_checked,110734
+twin,twin_true,7045
+timing,seconds,25.560000000

@@ -1,0 +1,34 @@
+category,key,value,extra
+run_status,started,1,mode=full threads=16 input=base_external_validation_inputs.csv version=v6_progress
+run_status,completed,1,output=tau_sync_sieve_full_results.csv
+summary_pooled,source_cases,335544320,
+summary_pooled,source_endpoint_missing,0,
+summary_pooled,sync_slots,200371531,
+summary_pooled,sync_success,200371531,
+summary_pooled,sync_fail,0,
+summary_pooled,invalid_j,0,
+summary_pooled,delta_fail,0,
+summary_pooled,qtarget_not_prime,135172789,
+summary_pooled,target_scan_skipped_by_sync,200371531,
+summary_pooled,target_direct_checks,0,
+summary_pooled,target_direct_fail,0,
+by_pair_pooled,11->51 slots,57610686,fail=0
+by_pair_pooled,15->55 slots,58534773,fail=0
+by_pair_pooled,51->11 slots,42227564,fail=0
+by_pair_pooled,55->15 slots,41998508,fail=0
+by_B_pooled,11->51 B=70 slots,32542499,fail=0
+by_B_pooled,11->51 B=76 slots,25068187,fail=0
+by_B_pooled,15->55 B=70 slots,36625903,fail=0
+by_B_pooled,15->55 B=76 slots,21908870,fail=0
+by_B_pooled,51->11 B=68 slots,22043889,fail=0
+by_B_pooled,51->11 B=74 slots,20183675,fail=0
+by_B_pooled,55->15 B=68 slots,19283191,fail=0
+by_B_pooled,55->15 B=74 slots,22715317,fail=0
+cache_pooled,prime_cache_hits,15831427206,
+cache_pooled,prime_cache_misses,2659274388,
+cache_pooled,class_cache_hits,1115904577,
+cache_pooled,class_cache_misses,6543107,
+lapse_pooled,11->51 q_prime_prefix,1059798656,"x_killed=779161625 (73.52%), x_prough=280637031 (26.48%), S_PR=159907079 (56.98%), A_PR=120729952 (43.02%), C3=0"
+lapse_pooled,15->55 q_prime_prefix,1059798656,"x_killed=779161625 (73.52%), x_prough=280637031 (26.48%), S_PR=159907079 (56.98%), A_PR=120729952 (43.02%), C3=0"
+lapse_pooled,51->11 q_prime_prefix,1054176974,"x_killed=773590163 (73.38%), x_prough=280586811 (26.62%), S_PR=159876141 (56.98%), A_PR=120710670 (43.02%), C3=0"
+lapse_pooled,55->15 q_prime_prefix,1054176974,"x_killed=773590163 (73.38%), x_prough=280586811 (26.62%), S_PR=159876141 (56.98%), A_PR=120710670 (43.02%), C3=0"

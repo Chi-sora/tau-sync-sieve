@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: tau-sync sieve
+message: "If you use this repository, please cite it as below."
+type: software
+authors:
+  - name: Chisora
+license: MIT
+abstract: "A sieve-assisted arithmetic framework based on tau stopping times, lapse prefixes, and sync transfer rules for finite Goldbach endpoint validation."
+keywords:
+  - tau-sync sieve
+  - Goldbach
+  - computational number theory
+  - sieve
+  - tau
+  - lapse
+  - sync
+version: 0.1.0
+date-released: 2026-06-01

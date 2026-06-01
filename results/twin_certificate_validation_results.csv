@@ -1,0 +1,3 @@
+section,metric1,value1,metric2,value2,metric3,value3,metric4,value4
+twin_certificate,prime_x,110734,covered,110734,unknown,0,twin_true,7045,non_twin,103689,seconds,0.070000000
+twin_certificate_validation,covered,110734,direct_true,7045,fail,0,seconds,0.070000000
