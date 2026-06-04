@@ -1,0 +1,25 @@
+[established]
+Repack test.
+
+compile_ok=True
+run_ok=True
+
+C file:
+  tau_gen_candidates_block.c
+
+Expected ending:
+  return 0;
+  }
+
+Compiler output:
+
+
+
+Run output:
+RUN block_sieve steps=100000 filter_primes=1000 block_size=8192 emit=1
+INFO no GMP
+INFO no factorization
+INFO no per-step residue update
+INFO block marking by small-prime residues
+DONE processed=100000 k_digits=6 emitted=5157 filtered=94843 rate_steps_per_sec=10000000.00
+
