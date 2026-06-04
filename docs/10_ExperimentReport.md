@@ -2,203 +2,280 @@
 
 ## Overview
 
-This experiment investigated a tau-sync based candidate generator for
-twin primes.
+This report summarizes the tau-sync candidate-generation experiment.
 
-The objective was not to prove primality directly, but to determine
-whether a lightweight synchronized filter could efficiently eliminate
-non-candidates before expensive verification.
+The purpose of the experiment was to test whether tau-sync style filtering can reduce the number of twin-prime candidates before final verification.
 
-------------------------------------------------------------------------
+The main result was that block-sieve based candidate generation was much faster than the earlier per-step residue update method.
 
-## Basic Definitions
+---
 
-Let
+## Definitions
 
-    p0 = 6k - 1
-    p1 = 6k + 1
+### Twin Candidate
 
-A twin-prime candidate is defined as
+For an integer k:
 
-    TwinCandidate(k)
-    = (6k-1, 6k+1)
+```text
+p0 = 6k - 1
+p1 = 6k + 1
+```
 
-The residue filter rejects a candidate if
+A twin-prime candidate is:
 
-    6k-1 == 0 (mod r)
-    or
-    6k+1 == 0 (mod r)
+```text
+TwinCandidate(k) = (6k - 1, 6k + 1)
+```
 
-for any cached small prime `r`.
+### Residue Rejection Rule
 
-The final twin-prime condition is
+For a small prime r greater than 3:
 
-    Prime(6k-1)
-    and
-    Prime(6k+1)
+```text
+6k - 1 == 0 mod r
+or
+6k + 1 == 0 mod r
+```
 
-------------------------------------------------------------------------
+means that at least one side of the pair is composite.
 
-## Initial Architecture
+Because gcd(6,r)=1, the inverse of 6 modulo r exists.
 
-Generator:
+Define:
 
--   Start from k = 1
--   Update residue states
--   Reject obvious composites
--   Save survivors to `candidates.csv`
+```text
+bad_minus = inv6 mod r
+bad_plus  = -inv6 mod r
+```
 
-Verifier:
+Then k is rejected when:
 
--   Read candidates
--   Construct
-    -   p = 6k - 1
-    -   p + 2 = 6k + 1
--   Apply GMP probable-prime test
+```text
+k == bad_minus mod r
+or
+k == bad_plus mod r
+```
 
-------------------------------------------------------------------------
+---
 
-## Experimental Results
+## Initial Generator
 
-### Candidate Generation
+The first generator used the following approach:
 
-Observed run:
+```text
+for each k:
+    update residue state
+    test residue state
+    emit candidate if not rejected
+```
 
-    step          : about 100,000,000
-    k_digits      : 9
-    candidate file: about 39 MB
-    candidates    : 2,203,806
+This worked correctly, but it still performed too many repeated residue updates.
 
-Approximately 98% of examined states were removed before primality
-testing.
+---
 
-------------------------------------------------------------------------
+## Candidate Generation Result
 
-### Twin Prime Verification
+An observed run reached:
 
-Example verified pair:
+```text
+step          : about 100,000,000
+k_digits      : 9
+candidate file: about 39 MB
+candidates    : 2,203,806
+```
 
-    (104801, 104803)
+The filter removed most states before final verification.
 
-The largest verified pair obtained during the experiment was
+Approximate candidate rate:
 
-    (611999681, 611999683)
+```text
+2,203,806 / 102,000,000
+about 2.16 percent
+```
 
-------------------------------------------------------------------------
+---
+
+## Verification Result
+
+Example verified twin-prime pair:
+
+```text
+(104801, 104803)
+```
+
+Largest verified pair observed in the checked range:
+
+```text
+(611999681, 611999683)
+```
+
+---
 
 ## Performance Investigation
 
-CPU utilization remained around 30%.
+### Output Cost
 
-Several possible bottlenecks were investigated.
+The earlier implementation opened and closed the candidate CSV file for every emitted candidate.
 
-### CSV Output
+This was changed to:
 
-Original version:
+```text
+open output file once
+use a large write buffer
+flush periodically
+```
 
--   fopen()
--   fprintf()
--   fclose()
+This improved performance, but it did not remove the main cost.
 
-for every candidate.
+---
 
-Optimization:
+## Residue Evaluation Order
 
--   Open file once
--   Large write buffer
--   Periodic flush
+Two residue orders were compared:
 
-Result:
+```text
+small-prime-first
+large-prime-first
+```
 
-Approximately 1.3x speed improvement.
-
-------------------------------------------------------------------------
-
-### Residue Evaluation Order
-
-Two strategies were compared.
-
-1.  Small primes first
-2.  Large primes first
-
-The small-prime-first strategy produced identical results while
-requiring far fewer average checks.
+The small-prime-first order was much faster because small primes reject candidates more frequently.
 
 Conclusion:
 
-    Early reject using small primes is preferable.
+```text
+evaluate high-rejection residues first
+```
 
-------------------------------------------------------------------------
+---
 
-### Block Sieve Optimization
+## Block Sieve Addition
 
-Observation:
+### Motivation
 
-The optimized version still updated every residue at every step.
+The optimized generator still updated every residue at every step.
 
-New approach:
+Conceptually:
 
--   Process one block at a time.
--   Mark invalid offsets for every small prime.
--   Update base residues once per block.
+```text
+for each k:
+    update all residues
+    test all residues
+```
 
-Conceptually,
+This was unnecessary.
 
-Old:
+### New Idea
 
-    O(steps * filter_primes)
+The block-sieve version processes a whole block at once.
 
-New:
+Conceptually:
 
-    O(block_size * sum(1/r))
+```text
+for each block:
+    mark invalid offsets using each small prime
+    emit only unmarked offsets
+    update base residues once
+```
 
-Correctness test:
+This removes per-step residue maintenance.
 
--   steps = 100000
--   filter_primes = 10000
+### Correctness Test
+
+The block-sieve implementation was compared with the previous optimized generator.
+
+Test condition:
+
+```text
+steps          = 100000
+filter_primes  = 10000
+```
+
+Comparison items:
+
+```text
+candidate count
+candidate order
+candidate sequence
+```
 
 Result:
 
-The generated candidate sets matched exactly.
+```text
+candidate sequence matched exactly
+```
 
-------------------------------------------------------------------------
+Thus the block-sieve version changed the execution method, not the candidate definition.
 
-## Discussion
+### Performance Result
 
-The experiment suggests that the major strength of tau-sync is not
-proving primality directly.
+Observed benchmark:
 
-Its primary value appears to be:
+```text
+processed=10000000000
+k_digits=11
+emitted=159845476
+filtered=9840154524
+rate_steps_per_sec=62927513.80
+```
 
--   candidate compression
--   synchronization-based filtering
--   reduction of expensive primality tests
+Compared with the previous optimized version, the observed speed improvement was approximately:
 
-The search space itself remains extremely large, but the filtering stage
-is computationally lightweight.
+```text
+about 230x
+```
 
-------------------------------------------------------------------------
+---
+
+## Interpretation
+
+The main bottleneck was not the mathematical candidate definition itself.
+
+The main bottleneck was redundant residue maintenance.
+
+The block-sieve method reduced this redundant work.
+
+---
+
+## Practical Meaning
+
+The experiment suggests that tau-sync style filtering is useful as:
+
+```text
+candidate compression
+search pre-processing
+final-verification reduction
+```
+
+It is not presented here as a direct proof method.
+
+It is best understood as a high-speed candidate generator.
+
+---
 
 ## Future Work
 
-Possible improvements:
+Possible next steps:
 
-1.  Better integration between residue logic and tau-sync.
-2.  Remove unnecessary residue calculations.
-3.  Dynamic ordering based on rejection frequency.
-4.  Binary output instead of CSV.
-5.  Block-based parallel generation.
+```text
+1. Store candidates in binary format instead of CSV.
+2. Save base_k plus offsets instead of full decimal k values.
+3. Add a streaming final verifier.
+4. Add block-level parallelization.
+5. Measure rejection contribution per residue.
+6. Compare several block sizes.
+```
 
-------------------------------------------------------------------------
+---
 
 ## Conclusion
 
-The experiments demonstrated that:
+The experiment demonstrated that:
 
--   tau-sync style filtering is computationally inexpensive,
--   candidate reduction is significant,
--   block-sieve style optimization preserves correctness,
--   and the overall approach scales well for long-running searches.
+```text
+tau-sync style filtering can remove most candidates early
+block-sieve marking preserves candidate correctness
+redundant residue updates can be removed
+candidate generation can exceed 60 million steps per second
+```
 
-The algorithm appears to function more naturally as a high-speed
-candidate generator than as a direct primality prover.
+The most important result is that the block-sieve approach preserves the same candidate set while greatly improving generation speed.
