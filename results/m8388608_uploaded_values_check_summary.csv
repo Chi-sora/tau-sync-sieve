@@ -1,5 +1,0 @@
-file_class,rows,unique_x,tau_only_class_values,standard_direct_class_values,mismatch_rows,occurrence_sum,twin_true,twin_false,twin_na
-prime,110734,110734,prime:110734,prime:110734,0,110734,7045,103689,0
-semiprime,29151,29151,semiprime:29151,semiprime:29151,0,29151,0,0,29151
-almost_prime,32479,32479,almost_prime:32479,almost_prime:32479,0,32479,0,0,32479
-ALL,172364,172364,,,0,172364,7045,103689,61630
