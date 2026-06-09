@@ -1,165 +1,192 @@
-# tau-sync sieve 日本語README
+# tau-sync index sieve
 
 著者: Chisora
 
-ライセンス:
-- repositoryの主ライセンス: 文書・理論説明・定義は CC BY 4.0
-- ソースコード: `src/` と `scripts/` は MIT
-
-## ライセンス詳細
-
-このrepositoryは、ソースコードと文書でライセンスを分けています。
+## 状態
 
 ```text
-文書・定義・理論説明: CC BY 4.0
-`src/` と `scripts/` のソースコード: MIT
+確立:
+  有限計算の定義
+  算術恒等式
+  検証範囲の記述
+  packed full-index format specification
+
+主張しない:
+  Goldbach予想の証明
+  無限範囲の定理
+  検証なしに素数事実を作ること
 ```
 
-root の `LICENSE` には GitHub が主ライセンスとして検出しやすいように CC BY 4.0 legalcode 全文だけを入れています。MIT のソースコードライセンス全文は `CODE-LICENSE-MIT.txt` を見てください。
-初回リリース内容と有限検証の要約は `RELEASE_NOTES.md` にあります。
+## 目的
 
-
-
-## 概要
-
-`tau-sync sieve` は、Goldbach endpoint と nearend 構造を調べるための算術的な篩フレームワークです。
-
-中心は次の3つです。
+`tau-sync index sieve` は、次の2層を文書化します。
 
 ```text
-tau:
-  検証済みの first-hit 位置
+tau-sync arithmetic layer:
+  q_s(j)
+  x_s(N,j)
+  tau
+  lapse
+  sync
+  valid_t
+  certificates
+  no-left-behind rule
 
-lapse:
-  tau が出る前の no-hit prefix
-
-sync:
-  delta_x = 0 による stream 間の転送規則
+packed index layer:
+  1 から end までの full-index file
+  1整数あたり1 byte
+  P/S/A/O/U labels
+  C0/C2/CM/PR mask
+  stored label と query resolved label
 ```
 
-特に、source 側で Goldbach endpoint が出て、target 側でも同じ `x` を再利用できる場合、target 側の endpoint 上限が得られます。
+mathematical layer は監査と推論のための層です。packed index layer は有限範囲の
+lookup と再現可能な計算のための層です。
 
-```text
-source G at t
-AND valid_t(t,B)
-AND delta_x(j_forced,t) = 0
-  -> target G at j_forced
-  -> tau_g_target <= j_forced
-```
-
-## 重要な注意
-
-`mod 6` は tau ではありません。候補を作る residue prefilter です。
+## 中心的注意
 
 ```text
 mod 6:
-  構造層
-  q = 6j +/- 1 を作る
-  C3 scan exclusion や B, j_forced に使う
+  structural residue layer
+  tau ではない
 
 tau:
-  実際に prime / semiprime / almost-prime などが検証された first-hit
+  verified first-hit fact
 ```
 
-この区別により、candidate tau という紛らわしい概念を使わずに済みます。
+residue candidate は prime fact ではなく、tau value でもありません。
 
-## 検証状態
+## 予定command interface
 
-このリポジトリは有限範囲の計算検証を含みます。Goldbach予想などの無限範囲命題を証明するものではありません。
-
-含まれる主な検証結果:
-
-```text
-Full sync validation:
-  source_cases = 335544320
-  sync_slots   = 200371531
-  sync_fail    = 0
-  delta_fail   = 0
-  invalid_j    = 0
-
-M=8388608 value comparison:
-  class_mismatch = 0
-  twin_mismatch  = 0
-
-実値分類:
-  prime        = 110734 unique x
-  semiprime    = 29151 unique x
-  almost_prime = 32479 unique x
-```
-
-## Windowsでの実行
-
-必要環境:
-
-```text
-Windows 11
-MinGW64 gcc
-cmd.exe
-```
-
-ビルド:
+コードはあとで追加します。予定している Windows command interface は次です。
 
 ```bat
-scripts\build_windows.bat
+build.bat
+tau_index.exe build <end> <index.bin> [threads] [chunk_mb]
+tau_index.exe query <index.bin> <n>
+tau_index.exe twins <index.bin> <start> <end> [count]
 ```
 
-full sync validation:
-
-```bat
-scripts\run_full_validation_windows.bat
-```
-
-M=8388608 の全行比較:
-
-```bat
-scripts\run_m8388608_values_windows.bat
-scripts\check_all_rows_windows.bat
-```
-
-prime / semiprime / almost_prime の実値CSV出力:
-
-```bat
-scripts\export_actual_values_windows.bat
-```
-
-## ファイル構成
+packed index の範囲は次です。
 
 ```text
-README.md
-README.ja.md
-src/
-scripts/
-data/
-docs/
-results/
+1 <= n <= end
 ```
 
-## 追加の技術メモ
+これは full index です。segmented sieve ではありません。
 
-tau-sync sieve では、次の2つの実行方式を分けています。
-
-* **certificate mode**: 検証済みの tau, class label, lapse, sync, companion certificate を再利用して高速に検証する方式です。対象行が certificate で覆われている場合、`is_prime(x)` を呼びません。
-* **parallel tau lanes**: endpoint, lapse, sync, nearend, TWIN などを別々の lane として処理し、すべての tau の着火を互いに待たせない方式です。
-
-詳しくは次を参照してください。
-
-* [docs/08_certificate_mode_and_no_is_prime.md](docs/08_certificate_mode_and_no_is_prime.md)
-* [docs/09_parallel_tau_lanes.md](docs/09_parallel_tau_lanes.md)
-
-厳密定義や数式は `docs/` に分割しています。tau の細かい種類は `docs/05_tau_taxonomy.md` にまとめています。CSV列や出力の読み方は `docs/06_outputs_and_labels.md` にあります。分類器、パラメータ、残余ケースは `docs/07_classifier_and_parameters.md` にあります。
-
-## 誤解しやすい点
+## packed labels
 
 ```text
-tau-only certificate mode:
-  既に作られた tau / lapse / certificate を使う高速検証
+P:
+  prime
 
-raw build mode:
-  tau を最初に作る処理
-  ここでは素数判定や分類が必要
+S:
+  semiprime
+  Omega(n) = 2
+
+A:
+  almost-prime class
+  Omega(n) >= 3
+
+O:
+  outside arithmetic domain
+
+U:
+  unresolved stored label
 ```
 
-つまり、tau は初回から魔法のように存在するものではありません。最初に直接判定で作り、その後の検証では certificate として高速に再利用します。
+`AlmostPrimeClass` は project-local terminology です。
+
+```text
+AlmostPrimeClass(n):
+  n は composite
+  かつ n は semiprime ではない
+```
+
+## packed record
+
+```text
+record_size:
+  1 byte per integer
+
+bits 0..2:
+  stored label
+
+bits 3..6:
+  C0/C2/CM/PR mask
+
+bit 7:
+  reserved
+```
+
+stored label と query で表示される label は意図的に分けます。
+
+```text
+stored_label:
+  build時に書かれるlabel
+
+resolved_label:
+  query時に factor 2 / factor 3 を剥がして表示されるlabel
+```
+
+## 文書
+
+```text
+docs/01_definitions.md
+docs/02_theory.md
+docs/03_validation.md
+docs/04_reproducibility.md
+docs/05_tau_taxonomy.md
+docs/06_outputs_and_labels.md
+docs/07_classifier_and_parameters.md
+docs/08_certificate_mode_and_no_is_prime.md
+docs/09_parallel_tau_lanes.md
+docs/10_packed_index_format.md
+docs/11_documentation_notes.md
+docs/12_tau_c0c2cm_index.md
+```
+
+## ライセンス
+
+```text
+文書・定義・理論説明:
+  CC BY 4.0
+
+source code:
+  MIT
+```
+
+参照:
+
+```text
+LICENSE
+CODE-LICENSE-MIT.txt
+```
+
+## 同梱実装フォルダ
+
+このパッケージには、現在の Windows/MinGW 用 index builder フォルダを同梱しています。
+
+```text
+tau_c0c2cm_index/
+  README.txt
+  build.bat
+  main.c
+```
+
+現在の packed full-index 実装はこのフォルダを使います。
+
+```bat
+cd tau_c0c2cm_index
+build.bat
+tau_index.exe build 60000000 index.bin 8 1024
+tau_index.exe query index.bin 10000
+tau_index.exe twins index.bin 1 60000000 10
+```
+
+このコードフォルダは repository root 直下に置きます。このパッケージでは
+`src/` や `scripts/` の下には置きません。
 
 ## 著者の一言
 

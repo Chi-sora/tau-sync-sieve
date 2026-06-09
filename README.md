@@ -1,212 +1,192 @@
-# tau-sync sieve
+# tau-sync index sieve
 
 Author: Chisora
 
-License:
-- Primary repository license: CC BY 4.0 for documentation, theory text, definitions, and explanatory material
-- Source code license: MIT for files in `src/` and `scripts/`
-
-## What this repository contains
-
-`tau-sync sieve` is a sieve-assisted arithmetic framework for studying finite Goldbach endpoint data through three linked objects:
-
-```text
-tau   = verified first-hit time
-lapse = no-hit prefix before a tau
-sync  = arithmetic transfer across streams by delta_x = 0
-```
-
-The main idea is that a verified source endpoint can force a target endpoint when the same `x` value is reused across streams:
-
-```text
-source G at t
-AND valid_t(t,B)
-AND delta_x(j_forced,t) = 0
-  -> target G at j_forced
-  -> tau_g_target <= j_forced
-```
-
-This repository is organized to avoid ambiguity between residue candidates and verified prime facts:
-
-```text
-mod 6 layer:
-  structural residue prefilter, not a tau
-
-tau layer:
-  verified first-hit facts only
-```
-
 ## Status
 
-The project contains finite computational validations. It does not claim a proof of the Goldbach conjecture or of any infinite-range theorem. The verified claims are scoped to the included datasets and scripts.
+```text
+established:
+  finite computational definitions
+  arithmetic identities
+  validation-scope statements
+  packed full-index format specification
 
-Main checked results included here:
+not claimed:
+  proof of the Goldbach conjecture
+  infinite-range theorem
+  primality facts created without verification
+```
+
+## Purpose
+
+`tau-sync index sieve` documents two connected layers.
 
 ```text
-Full sync validation:
-  source_cases = 335544320
-  sync_slots   = 200371531
-  sync_fail    = 0
-  delta_fail   = 0
-  invalid_j    = 0
+tau-sync arithmetic layer:
+  q_s(j)
+  x_s(N,j)
+  tau
+  lapse
+  sync
+  valid_t
+  certificates
+  no-left-behind rule
 
-M=8388608 value comparison:
-  class_mismatch = 0
-  twin_mismatch  = 0
-
-Actual value classes:
-  prime        = 110734 unique x
-  semiprime    = 29151 unique x
-  almost_prime = 32479 unique x
+packed index layer:
+  full-index file from 1 to end
+  one byte per integer
+  P/S/A/O/U labels
+  C0/C2/CM/PR mask
+  stored label vs query-resolved label
 ```
 
-See `docs/03_validation.md` for validation details and `docs/05_tau_taxonomy.md` for the full tau taxonomy.
+The mathematical layer is for audit and reasoning.  The packed index layer is
+for finite lookup and reproducible computation.
 
-## Quick start on Windows
-
-Requirements:
+## Core warning
 
 ```text
-Windows 11
-MinGW64 gcc in PATH
-cmd.exe
+mod 6:
+  structural residue layer
+  not tau
+
+tau:
+  verified first-hit fact
 ```
 
-Build:
+A residue candidate is not a prime fact and is not a tau value.
+
+## Planned command interface
+
+Code will be added separately.  The planned Windows command interface is:
 
 ```bat
-scripts\build_windows.bat
+build.bat
+tau_index.exe build <end> <index.bin> [threads] [chunk_mb]
+tau_index.exe query <index.bin> <n>
+tau_index.exe twins <index.bin> <start> <end> [count]
 ```
 
-Run the full sync validation:
-
-```bat
-scripts\run_full_validation_windows.bat
-```
-
-Run the M=8388608 all-row comparison:
-
-```bat
-scripts\run_m8388608_values_windows.bat
-scripts\check_all_rows_windows.bat
-```
-
-Export actual values for prime, semiprime, and almost-prime classes:
-
-```bat
-scripts\export_actual_values_windows.bat
-```
-
-## Repository layout
+The packed index covers:
 
 ```text
-README.md
-README.ja.md
-LICENSE
-CODE-LICENSE-MIT.txt
-CITATION.cff
-ACKNOWLEDGEMENTS.md
-src/
-  tau_sync_sieve_full_validation.c
-  tau_m8388608_benchmark.c
-  actual_values_exporter.c
-  check_all_rows_results.c
-scripts/
-  build_windows.bat
-  run_full_validation_windows.bat
-  run_m8388608_values_windows.bat
-  check_all_rows_windows.bat
-  export_actual_values_windows.bat
-data/
-  inputs/
-  certificates/
-docs/
-  01_definitions.md
-  02_theory.md
-  03_validation.md
-  04_reproducibility.md
-  05_tau_taxonomy.md
-  06_outputs_and_labels.md
-  07_classifier_and_parameters.md
-results/
-  summary CSV files
+1 <= n <= end
 ```
 
-## License details
+This is a full index.  It is not a segmented sieve.
 
-This repository uses a dual-license layout:
+## Packed labels
 
 ```text
-documentation, definitions, theory notes, and explanatory text: CC BY 4.0
-source code in src/ and scripts/: MIT
+P:
+  prime
+
+S:
+  semiprime
+  Omega(n) = 2
+
+A:
+  almost-prime class
+  Omega(n) >= 3
+
+O:
+  outside arithmetic domain
+
+U:
+  unresolved stored label
 ```
 
-The root `LICENSE` file contains the full CC BY 4.0 legal code so that GitHub can detect the repository's primary license. The MIT source-code license is included in `CODE-LICENSE-MIT.txt`.
-See `RELEASE_NOTES.md` for the initial release summary and verified finite checks.
+`AlmostPrimeClass` is project-local terminology.
 
+```text
+AlmostPrimeClass(n):
+  n is composite
+  and n is not semiprime
+```
 
+## Packed record
+
+```text
+record_size:
+  1 byte per integer
+
+bits 0..2:
+  stored label
+
+bits 3..6:
+  C0/C2/CM/PR mask
+
+bit 7:
+  reserved
+```
+
+The stored label and the displayed query label are intentionally distinct.
+
+```text
+stored_label:
+  label written during build
+
+resolved_label:
+  label printed by query after optional factor-2/factor-3 cofactor resolution
+```
 
 ## Documentation
 
-- `docs/01_definitions.md`: strict definitions and notation
-- `docs/02_theory.md`: tau-sync sieve equations and interpretation
-- `docs/03_validation.md`: validation results and what they mean
-- `docs/04_reproducibility.md`: reproducible build and run instructions
-- `docs/05_tau_taxonomy.md`: complete tau taxonomy and label definitions
-- `docs/06_outputs_and_labels.md`: CSV output and label interpretation guide
-- `docs/07_classifier_and_parameters.md`: classifier flow, parameters, and residual cases
-- 
-## Additional technical notes
-
-The tau-sync sieve separates two execution ideas:
-
-* **Certificate mode**: reuses already verified tau, class labels, lapse facts, sync facts, and companion certificates for fast validation. For covered rows, this path does not call `is_prime(x)`.
-* **Parallel tau lanes**: splits tau processing into independent lanes, so endpoint, lapse, sync, nearend, and TWIN checks do not always wait for each other.
-
-For details, see:
-
-* [docs/08_certificate_mode_and_no_is_prime.md](docs/08_certificate_mode_and_no_is_prime.md)
-* [docs/09_parallel_tau_lanes.md](docs/09_parallel_tau_lanes.md)
-
-## Important terminology
-
 ```text
-prime number:
-  n > 1 and divisors(n) = {1,n}
-
-semiprime:
-  x = p*q where p and q are prime; p may equal q
-
-almost_prime in this repository:
-  composite and not semiprime
-
-Goldbach endpoint:
-  N = q + x, q prime, x prime
-
-TWIN companion certificate:
-  x prime and x+2 prime
+docs/01_definitions.md
+docs/02_theory.md
+docs/03_validation.md
+docs/04_reproducibility.md
+docs/05_tau_taxonomy.md
+docs/06_outputs_and_labels.md
+docs/07_classifier_and_parameters.md
+docs/08_certificate_mode_and_no_is_prime.md
+docs/09_parallel_tau_lanes.md
+docs/10_packed_index_format.md
+docs/11_documentation_notes.md
+docs/12_tau_c0c2cm_index.md
 ```
 
-## What is not claimed
-
-This project does not claim:
+## License
 
 ```text
-1. a proof for all even integers;
-2. that tau removes the need for primality tests during first raw construction;
-3. that candidate residues are prime tau;
-4. that certificate mode is the same as raw build mode.
+documentation, definitions, theory notes, explanatory text:
+  CC BY 4.0
+
+source code:
+  MIT
 ```
 
-Correct distinction:
+See:
 
 ```text
-raw build mode:
-  creates verified tau/class facts from direct tests and classification
-
-certificate mode:
-  reuses verified tau/lapse/class/certificate facts for fast validation
+LICENSE
+CODE-LICENSE-MIT.txt
 ```
+
+## Included implementation folder
+
+The repository package now includes the current Windows/MinGW index-builder folder.
+
+```text
+tau_c0c2cm_index/
+  README.txt
+  build.bat
+  main.c
+```
+
+Use this folder for the current packed full-index implementation.
+
+```bat
+cd tau_c0c2cm_index
+build.bat
+tau_index.exe build 60000000 index.bin 8 1024
+tau_index.exe query index.bin 10000
+tau_index.exe twins index.bin 1 60000000 10
+```
+
+The code folder is intentionally kept directly under the repository root.  It is
+not placed under `src/` or `scripts/` in this package.
 
 ## Author note
 

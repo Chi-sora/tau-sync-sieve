@@ -72,21 +72,29 @@ C3(x):
   and x mod 3 = 0
 ```
 
-In the scan setting used here:
+In a scan stream, C3 is governed by the residue separation condition:
 
 ```text
-N = 0 mod 3
-q_s(j) = 6j +/- 1
 x_s(N,j) = N - q_s(j)
+
+C3_s(N,j) occurs
+  iff x_s(N,j) = 0 mod 3
+  iff N = q_s(j) mod 3
 ```
 
-Then:
+Therefore:
 
 ```text
-x_s(N,j) != 0 mod 3
+C3_s(N,j) is inactive
+  iff N != q_s(j) mod 3
 ```
 
-So C3 does not occur inside `scan_g` or `scan_tv` under this setting.
+In the checked tau-sync sieve configuration, the stream residues are chosen so that
+`N != q_s(j) mod 3` at the scanned indices. Hence C3 does not occur inside
+`scan_g` or `scan_tv` under that configuration.
+
+The special case `N = 0 mod 3` and `q_s(j)=6j +/- 1` is one sufficient example,
+but it is not the general reason for C3 inactivity.
 
 ## Goldbach endpoint
 
@@ -282,3 +290,39 @@ The detailed classifier flow, default parameters (`JMAX_DEFAULT=5000`, `P_def=19
 ```text
 docs/07_classifier_and_parameters.md
 ```
+
+
+## Packed-index label convention
+
+The packed index layer uses short labels for integer records.
+
+```text
+P:
+  Prime(n)
+
+S:
+  Semiprime(n)
+
+A:
+  AlmostPrimeClass(n)
+
+O:
+  outside the arithmetic domain used by the index
+
+U:
+  unresolved stored label
+```
+
+`U` is not a mathematical class.  It is an explicit storage state.
+
+For packed-index labels:
+
+```text
+S:
+  Omega(n) = 2
+
+A:
+  Omega(n) >= 3
+```
+
+These labels do not change the definitions of tau, lapse, sync, or certificates.

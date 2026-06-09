@@ -126,3 +126,50 @@ Do not interpret certificate-mode speed as raw construction speed.
 
 The repository should keep only small samples and summary outputs.
 Large all-row CSV files, binary caches, and full raw outputs should be kept outside the repository or attached to releases if needed.
+
+
+## 7. Packed-index query output
+
+The packed index query should distinguish stored and resolved values.
+
+```text
+n:
+  requested integer
+
+range:
+  index coverage interval
+
+label:
+  query-resolved label
+
+label_long:
+  expanded name of the query-resolved label
+
+resmask:
+  query-resolved or inherited C0/C2/CM/PR mask
+
+stored_label:
+  raw label from the one-byte record
+
+stored_resmask:
+  raw mask from the one-byte record
+```
+
+Interpretation:
+
+```text
+stored_label:
+  build-time state
+
+label:
+  query-time resolved state
+```
+
+If `stored_label = U`, query may still print `label = P`, `S`, or `A` after
+factor-2/factor-3 cofactor resolution.
+
+## 8. Active file-reference policy
+
+Do not list large CSV files, result files, or generated binary caches as active
+repository files unless they are present.  It is acceptable to keep summary
+values as finite validation summaries.

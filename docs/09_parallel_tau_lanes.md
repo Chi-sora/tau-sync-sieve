@@ -364,3 +364,28 @@ or
 ```text
 tau lane pipeline
 ```
+
+
+## 12. Relation to packed-index builder
+
+The packed index builder uses a simplified version of the same dependency
+discipline.
+
+```text
+build-time unresolved:
+  stored as U
+
+cofactor route:
+  marked with PR when applicable
+
+query-time recovery:
+  allowed to resolve U by reading one cofactor record
+```
+
+This is an implementation-level use of the no-left-behind rule.
+
+```text
+do not use U as P
+do not use U as S
+do not use U as A
+```

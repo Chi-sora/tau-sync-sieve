@@ -122,6 +122,31 @@ It is used for:
 
 It is not a tau.
 
+### C3 scan exclusion
+
+C3 inactivity is controlled by residue separation, not by the special condition
+`N = 0 mod 3` alone.
+
+```text
+x_s(N,j) = N - q_s(j)
+
+x_s(N,j) = 0 mod 3
+  iff N = q_s(j) mod 3
+```
+
+Thus:
+
+```text
+C3 is inactive inside a scan
+  iff N != q_s(j) mod 3
+```
+
+The checked scan configuration satisfies this condition by construction.
+The commonly used case `N = 0 mod 3` with `q_s(j)=6j +/- 1` is a sufficient
+example of the same rule.
+
+C3 may still be meaningful in companion classification outside the scan setting.
+
 ## Lapse as arithmetic no-hit prefix
 
 For `tau_gs(N) = t`, the prefix `j < t` satisfies:
@@ -216,3 +241,16 @@ Minimal order:
 4. sync pass
 5. optional nearend audit pass
 ```
+
+
+## Relation to packed full-index lookup
+
+The packed index is a finite lookup layer.
+
+```text
+x_s(N,j) = N - q_s(j)
+```
+
+This identity is unchanged.  The index may provide class facts for integer
+values, but a tau-sync result still requires its predecessor facts to be known,
+certified, or explicitly unresolved/unaudited.

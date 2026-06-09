@@ -322,18 +322,7 @@ twin true among unique prime x:
 ```
 
 The full-row expansion checks every row by lookup.
-The unique-value output files list concrete `x` values for the three classes.
-
-```text
-prime values:
-  m8388608_actual_values_prime_values.csv
-
-semiprime values:
-  m8388608_actual_values_semiprime_values.csv
-
-almost-prime values:
-  m8388608_actual_values_almost_prime_values.csv
-```
+If concrete value files are included, they should list the unique `x` values for the prime, semiprime, and almost-prime classes.  Do not name such files as active repository files unless they are present.
 
 ## 11. Correct interpretation
 
@@ -378,3 +367,22 @@ is_prime-free path:
 standard direct comparison:
   checks unique x values and expands by lookup
 ```
+
+
+## 13. Relation to packed-index query
+
+The packed-index query path is a lookup path, not a raw proof of primality from
+nothing.
+
+```text
+stored record:
+  created by build
+
+query:
+  reuses stored facts
+  may strip factors 2 and 3
+  may read one cofactor record
+```
+
+If a value is not covered or remains unresolved, the correct output is `U`, not
+a guessed class.

@@ -6,88 +6,168 @@ Recommended environment:
 
 ```text
 Windows 11
-MinGW64 gcc
+MinGW-w64 gcc
 cmd.exe
 ```
 
-No Python is required for the included C checker path.
+No Python is required for the planned C index-builder path.
 
-## Build all tools
+## Current planned packed-index path
 
-```bat
-scripts\build_windows.bat
-```
-
-This creates executables under:
-
-```text
-build\
-```
-
-## Full sync validation
+Code will be added separately.  The intended command path is:
 
 ```bat
-scripts\run_full_validation_windows.bat
+build.bat
+tau_index.exe build <end> <index.bin> [threads] [chunk_mb]
+tau_index.exe query <index.bin> <n>
+tau_index.exe twins <index.bin> <start> <end> [count]
 ```
 
-Output:
+The builder always creates an index over:
 
 ```text
-results\tau_sync_sieve_full_results.csv
+1 <= n <= end
 ```
 
-## M=8388608 all-row comparison
+The lower bound `1` is not passed on the command line.
+
+## Build
 
 ```bat
-scripts\run_m8388608_values_windows.bat
-scripts\check_all_rows_windows.bat
+build.bat
 ```
 
-Expected checker values:
+Expected build result:
 
 ```text
-rows_ok = 1
-class_mismatch = 0
-twin_mismatch = 0
-ok = 1
+Build OK: tau_index.exe
 ```
 
-## Export actual value CSV files
+## Build examples
+
+Small check:
 
 ```bat
-scripts\export_actual_values_windows.bat
+tau_index.exe build 60000000 index_60m.bin 8 1024
 ```
 
-Outputs under `results\`:
+Large check:
 
-```text
-m8388608_actual_values_unique_all.csv
-m8388608_actual_values_prime_values.csv
-m8388608_actual_values_semiprime_values.csv
-m8388608_actual_values_almost_prime_values.csv
-m8388608_actual_values_summary.csv
+```bat
+tau_index.exe build 100000000000 index.bin 16 1024
 ```
 
-## Data files
+## Query example
 
-Certificate data:
-
-```text
-data\certificates\tau_only_classification_rows.csv
-data\certificates\twin_companion_certificate.csv
+```bat
+tau_index.exe query index.bin 10000
 ```
 
-Input data:
+Expected arithmetic interpretation:
 
 ```text
-data\inputs\test_input.csv
-data\inputs\base_external_validation_inputs.csv
+10000 = 2^4 * 5^4
+Omega(10000) = 8
+resolved label = A
+```
+
+## Twin-prime search example
+
+```bat
+tau_index.exe twins index.bin 1 60000000 10
+```
+
+## Disk-size formula
+
+For packed format version 3:
+
+```text
+index_size_bytes = 64 + end
+```
+
+For:
+
+```text
+end = 100000000000
+```
+
+the expected file size is:
+
+```text
+100000000064 bytes
+approximately 93.13 GiB
+```
+
+## Progress
+
+The intended build progress output is:
+
+```text
+[progress] xx.xx% (done/total)
+```
+
+The intended interval is approximately:
+
+```text
+5 seconds
 ```
 
 ## Reproducibility cautions
 
-1. Do not mix old executables with new source files. Rebuild before running.
-2. Do not treat mod 6 residue candidates as verified prime tau.
-3. Certificate mode is fast because verified facts are already available.
-4. Raw build mode and certificate mode answer different performance questions.
-5. If a CSV is opened in spreadsheet software while a program writes to it, Windows may lock the file.
+```text
+1. Extract the zip before running build.bat.
+2. Rebuild after replacing main.c.
+3. Do not mix old executables with new source files.
+4. Do not mix old index files with a new magic/version.
+5. Do not open index.bin in spreadsheet or editor software while building.
+6. Keep enough disk space for the full index.
+```
+
+## Legacy validation scripts
+
+Earlier tau-sync validation notes used scripts such as full-sync validation,
+M=8388608 comparison, and actual-value export scripts.
+
+Those script names should not be shown as the current quick-start path unless
+the scripts are present in the repository.  If they are restored later, this
+file can add exact script names again.
+
+## Current included implementation
+
+The current implementation folder is included at repository root.
+
+```text
+tau_c0c2cm_index/
+  README.txt
+  build.bat
+  main.c
+```
+
+Build from that folder:
+
+```bat
+cd tau_c0c2cm_index
+build.bat
+```
+
+Create a small test index:
+
+```bat
+tau_index.exe build 60000000 index.bin 8 1024
+```
+
+Query one value:
+
+```bat
+tau_index.exe query index.bin 10000
+```
+
+Twin-prime search:
+
+```bat
+tau_index.exe twins index.bin 1 60000000 10
+```
+
+The implementation folder is the active path for the current package.  Historical
+validation script names should not be treated as active commands unless those
+files are restored.

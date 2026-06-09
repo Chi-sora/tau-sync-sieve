@@ -4,11 +4,7 @@ This document reports finite computational validation only. It does not assert a
 
 ## Full sync validation
 
-Included summary file:
-
-```text
-results/full_validation_summary.csv
-```
+Historical summary values:
 
 Main values:
 
@@ -66,11 +62,7 @@ A_PR  about 43 percent
 
 ## M=8388608 classification validation
 
-Included summary file:
-
-```text
-results/m8388608_actual_values_summary.csv
-```
+Historical summary values:
 
 Unique x values:
 
@@ -82,11 +74,7 @@ almost_prime = 32479
 mismatch     = 0
 ```
 
-Uploaded-value recheck:
-
-```text
-results/m8388608_uploaded_values_check_summary.csv
-```
+Uploaded-value recheck summary:
 
 Summary:
 
@@ -106,11 +94,7 @@ semiprime vs almost_prime overlap = 0
 
 ## Goldbach HIT values
 
-Included summary:
-
-```text
-results/hit_prime_values_goldbach_summary.csv
-```
+Historical summary values:
 
 Main values:
 
@@ -137,11 +121,7 @@ twin_cert
 
 ## TWIN companion validation
 
-Included summary:
-
-```text
-results/twin_certificate_validation_results.csv
-```
+Historical summary values:
 
 TWIN companion certificate:
 
@@ -168,3 +148,40 @@ verified tau/lapse/class/certificate facts are already available
 ```
 
 It is not the same as raw first construction. Raw construction still requires direct verification or a trusted certificate source.
+
+
+## Packed-index validation targets
+
+For the current packed-index format, validation should include:
+
+```text
+header_valid:
+  magic/version/record_size match the expected format
+
+offset_valid:
+  offset(n) = 64 + (n - 1)
+
+stored_vs_resolved_valid:
+  stored_label and query resolved label are not confused
+
+no_predecessor_random_read_in_build:
+  build avoids random reads from already written predecessor records
+
+query_resolution_valid:
+  factor-2/factor-3 cofactor resolution gives the expected displayed label
+```
+
+Example target:
+
+```text
+n = 10000
+10000 = 2^4 * 5^4
+Omega(10000) = 8
+resolved label = A
+```
+
+## File-reference policy
+
+This document may keep numerical summaries from previous validation work.
+Do not reference result CSV files as active repository files unless those files
+are actually present in the repository.

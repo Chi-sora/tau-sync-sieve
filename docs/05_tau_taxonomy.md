@@ -130,8 +130,9 @@ tau_c3s(N):
   min { j : Q_s(j) and C3(x_s(N,j)) }
 ```
 
-In the checked scan setting, `tau_c3s` is inactive because C3 does not occur inside the scan.
-C3 remains useful for companion classification outside that scan setting.
+In the checked scan setting, `tau_c3s` is inactive because the residue
+separation condition `N != q_s(j) mod 3` prevents C3 from occurring inside the
+scan. C3 remains useful for companion classification outside that scan setting.
 
 ## 5. Project-local class predicates
 
@@ -362,3 +363,17 @@ For the exact classifier flow, default values `JMAX_DEFAULT=5000` and `P_def=193
 ```text
 docs/07_classifier_and_parameters.md
 ```
+
+
+## 14. Packed-index labels are not tau
+
+```text
+P/S/A/O/U:
+  integer labels stored or displayed by the packed index
+
+tau:
+  verified first-hit time
+```
+
+A packed index record may support a tau computation, but the record itself is
+not a tau value.

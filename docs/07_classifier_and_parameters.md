@@ -34,14 +34,22 @@ This layer is structural. It is not a tau.
 Consequences used by the implementation:
 
 ```text
-N = 0 mod 3
-q_s(j) = 6j +/- 1
+x_s(N,j) = N - q_s(j)
 
-therefore:
-  x_s(N,j) = N - q_s(j) is not 0 mod 3
+C3_s(N,j) occurs
+  iff x_s(N,j) = 0 mod 3
+  iff N = q_s(j) mod 3
 ```
 
-So `C3` is inactive inside `scan_g` and `scan_tv` under this setting.
+Therefore, inside `scan_g` and `scan_tv`, `C3` is inactive whenever
+
+```text
+N != q_s(j) mod 3
+```
+
+The checked tau-sync sieve configuration satisfies this residue separation
+condition by construction. The case `N = 0 mod 3` and `q_s(j)=6j +/- 1` is only
+a sufficient example, not the general reason.
 
 ## 3. Classifier output classes
 
@@ -211,3 +219,141 @@ occurrence_count
 
 The included validations are finite computational checks.
 They support the repository definitions and checked datasets, but they do not constitute an infinite theorem or a proof of the Goldbach conjecture.
+
+
+## 13. Packed-index relation to classify5
+
+The packed index builder is not required to run the historical `classify5` flow
+for every integer during build.
+
+The current performance-oriented rule is:
+
+```text
+build:
+  avoid random predecessor reads
+  store unresolved factor-2/factor-3 cofactor cases as U when needed
+  mark PR when the P-rough or cofactor route matters
+
+query:
+  strip factors 2 and 3
+  read one cofactor record when needed
+  display the resolved label
+```
+
+This keeps large builds closer to sequential write plus CPU marking.
+
+## 14. S_PR and PR bit
+
+If semiprime or almost-prime information is reached through a P-rough route or
+a factor-2/factor-3 cofactor route, the packed index uses:
+
+```text
+PR bit:
+  set in the mask
+```
+
+This prevents `S_PR`-like cases from becoming indistinguishable from
+`resmask = 0`.
+## Packed-index sieve vs classify5
+
+The historical `classify5` definition and the packed-index sieve do not record
+exactly the same diagnostic split.
+
+### classify5 diagnostic split
+
+```text
+P_def:
+  193
+```
+
+The historical classifier uses `P_def=193` to separate killed and P-rough
+classes.
+
+```text
+KILLED(x):
+  exists prime p with 5 <= p <= P_def and p divides x
+
+P_ROUGH(x):
+  no prime p with 5 <= p <= P_def divides x
+```
+
+Therefore the historical nearend labels distinguish:
+
+```text
+S_K:
+  killed semiprime
+
+S_PR:
+  P-rough semiprime
+
+A_K:
+  killed almost-prime class
+
+A_PR:
+  P-rough almost-prime class
+```
+
+### packed-index sieve split
+
+The packed-index builder uses sieve information over prime divisors for the
+stored `P/S/A/O/U` label and records only a compact mask.
+
+```text
+stored label:
+  P/S/A/O/U
+
+mask:
+  C0/C2/CM/PR
+```
+
+The packed index gives the same arithmetic `P/S/A` class when the value is
+resolved, but it does not by itself preserve the `P_def=193` boundary.
+
+Important distinction:
+
+```text
+RES_PR:
+  packed-index route marker
+
+RES_PR is not identical to:
+  P_ROUGH(x) with P_def=193
+```
+
+### consequence for nearend tau
+
+The following nearend objects require the killed/P-rough split with the declared
+`P_def` boundary.
+
+```text
+tau_shadow
+tau_eclipse
+tau_fury
+S_PR_lapse
+A_PR_lapse
+```
+
+Therefore, if these nearend tau values are computed after building a packed
+index, one of the following is required.
+
+```text
+1. store a separate killed/P-rough sidecar field,
+2. add a dedicated packed bit or class extension for the P_def boundary,
+3. recompute the P_def=193 killed/P-rough split during the nearend audit,
+4. use a trusted certificate table that contains the split.
+```
+
+Without one of these, the packed index supports the arithmetic class:
+
+```text
+P/S/A
+```
+
+but does not fully support reconstruction of:
+
+```text
+S_K vs S_PR
+A_K vs A_PR
+```
+
+This limitation is diagnostic, not a contradiction in the arithmetic
+prime/semiprime/almost-prime classification.
