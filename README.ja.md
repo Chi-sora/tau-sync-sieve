@@ -140,11 +140,9 @@ docs/04_reproducibility.md
 docs/05_tau_taxonomy.md
 docs/06_outputs_and_labels.md
 docs/07_classifier_and_parameters.md
-docs/08_certificate_mode_and_no_is_prime.md
-docs/09_parallel_tau_lanes.md
-docs/10_packed_index_format.md
-docs/11_documentation_notes.md
-docs/12_tau_c0c2cm_index.md
+docs/08_packed_index_format.md
+docs/09_documentation_notes.md
+docs/10_tau_c0c2cm_index.md
 ```
 
 ## ライセンス
