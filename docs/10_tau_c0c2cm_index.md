@@ -134,3 +134,111 @@ tau_fury
 ```
 
 requires a sidecar, extra bits, recomputation, or a trusted certificate table.
+
+## Relation to formal definitions
+
+The formal classification structure is documented in:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```
+
+The current implementation should be read as:
+
+```text
+packed lookup:
+  P/S/A/O/U
+
+route mask:
+  C0/C2/CM/PR
+
+safe theorem behind semi/almost:
+  S(x) + Exc(x)
+```
+
+The one-byte record is not a full theorem witness.  It does not fully store:
+
+```text
+S_C0/S_C2/S_CM counts
+S_total
+sp(x)
+Exc witness
+P_def=193 killed/P-rough boundary
+```
+
+Therefore, if later analysis needs:
+
+```text
+S_K/S_PR/A_K/A_PR
+tau_shadow/tau_eclipse/tau_fury
+```
+
+then it must use sidecar data, extra bits/classes, recomputation, or a trusted
+certificate table.
+
+## Endpoint derivation note
+
+The `tau_c0c2cm_index` package is derived from the tau endpoint scan viewpoint.
+
+```text
+tau endpoint scan:
+  q_s(j)
+  x_s(N,j) = N - q_s(j)
+  GoldbachHit(N,j,s)
+  tau_g(N)
+```
+
+Before the first endpoint hit, failed endpoint pairs are audited by endpoint
+states and residue-separated composite marks.
+
+```text
+endpoint composite route:
+  find p >= 5 with p | x
+  write x = p * y
+  classify the residue pair of (p,y) as C0, C2, or CM
+```
+
+This route mark helps compute the implementation quantities:
+
+```text
+S_C0(x)
+S_C2(x)
+S_CM(x)
+S_total(x)
+```
+
+The safe semi/almost rule is:
+
+```text
+S_total + Exc
+```
+
+not a residue-only rule.
+
+The packed index stores only the compact result:
+
+```text
+P/S/A/O/U + C0/C2/CM/PR
+```
+
+It is therefore a compact cache derived from the endpoint/classifier audit
+structure, not the full endpoint proof object.
+
+## Lapse and nearend scope
+
+The included `tau_c0c2cm_index` package is a compact packed-index builder.
+
+It does not by itself store a full lapse or nearend tau proof archive.
+
+```text
+not fully stored:
+  lapse feature witnesses
+  exact S_total
+  Exc witness
+  P_def=193 killed/P-rough split
+  nearend tau reconstruction inputs
+```
+
+If later analysis needs `tau_shadow`, `tau_eclipse`, `tau_fury`, `S_PR_lapse`,
+or `A_PR_lapse`, it must use sidecar data, extra bits/classes, recomputation,
+or a trusted certificate table.

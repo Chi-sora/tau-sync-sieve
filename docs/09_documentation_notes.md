@@ -1,61 +1,101 @@
 # Documentation notes
 
-## Preservation policy
-
-This revision preserves the original detailed docs as much as possible.
+## Current documentation set
 
 ```text
-kept:
-  01_definitions
-  02_theory
-  03_validation
-  04_reproducibility
-  05_tau_taxonomy
-  06_outputs_and_labels
-  07_classifier_and_parameters
-  08_certificate_mode_and_no_is_prime
-  09_parallel_tau_lanes
+docs/01_definitions.md
+docs/02_theory.md
+docs/03_validation.md
+docs/04_reproducibility.md
+docs/05_tau_taxonomy.md
+docs/06_outputs_and_labels.md
+docs/07_classifier_and_parameters.md
+docs/08_packed_index_format.md
+docs/09_documentation_notes.md
+docs/10_tau_c0c2cm_index.md
+docs/11_formal_definitions_c0c2cm.md
+```
 
-added:
-  10_packed_index_format
-  11_documentation_notes
+## Active implementation folder
+
+```text
+tau_c0c2cm_index/
+```
+
+Active implementation files:
+
+```text
+tau_c0c2cm_index/README.txt
+tau_c0c2cm_index/build.bat
+tau_c0c2cm_index/main.c
+```
+
+## Current formal structure
+
+```text
+theorem:
+  S(x) + Exc(x)
+
+implementation:
+  S_C0(x), S_C2(x), S_CM(x)
+
+diagnostics:
+  C0/C2/CM/PR
+  endpoint states
+  lapse and overlap features
+
+packed index:
+  P/S/A/O/U stored label
+  C0/C2/CM/PR mask
 ```
 
 ## Reference policy
 
-Active references should point only to files that are present in the repository.
+Active references should point only to files that are present in the package.
 
 ```text
 allowed:
   definitions
   equations
   finite validation summary values
-  planned command interface
-  historical validation descriptions
+  current implementation folder
+  current packed-index format
 
 avoid:
-  active links to missing scripts
-  active links to missing CSV files
-  active links to missing source files
+  active links to missing files
+  active links to missing folders
 ```
 
-If historical results are important, keep their numeric summaries but do not
-claim that missing files are included.
-
-## Code policy
-
-Code is not included in this documentation package.
-
-When code is added later, update:
+## Implementation caveats
 
 ```text
-README.md
-README.ja.md
-docs/04_reproducibility.md
-docs/10_packed_index_format.md
+RES_PR:
+  packed-index route marker
+
+P_ROUGH_Pdef:
+  predicate using P_def=193
 ```
 
-with the exact command output and index version.
+Do not state:
+
+```text
+RES_PR = P_ROUGH_Pdef
+```
+
+unless the implementation explicitly computes and stores the `P_def=193`
+boundary.
+
+The current packed record does not fully store:
+
+```text
+S_total
+sp(x)
+Exc(x)
+S_K/S_PR/A_K/A_PR
+```
+
+Use sidecar data, extra bits/classes, recomputation, or a trusted certificate
+table when those values are needed.
 
 ## Wording policy
 
@@ -65,8 +105,14 @@ Use explicit status language.
 definition:
   notation or convention
 
+established:
+  proven under stated preconditions
+
 finite validation:
   checked dataset or checked range
+
+strong evidence:
+  sampled or large finite evidence without global proof
 
 not claimed:
   infinite theorem
@@ -77,36 +123,45 @@ unknown:
 
 Do not write that a computational check proves an infinite theorem.
 
-## Implementation caveat for future code
+## Endpoint derivation documentation
 
-When code is added, do not describe `RES_PR` as equivalent to the historical
-`P_ROUGH(x)` predicate unless the implementation explicitly uses the
-`P_def=193` boundary.
-
-Correct wording:
+The derivation path is documented in:
 
 ```text
-RES_PR is a packed-index route marker.
-P_ROUGH(x) is defined by P_def=193.
+docs/11_formal_definitions_c0c2cm.md
 ```
 
-## Included code-folder reference policy
-
-This package includes one active implementation folder.
+The intended path is:
 
 ```text
-tau_c0c2cm_index/
+tau endpoint scan
+  -> endpoint composite marks
+  -> C0/C2/CM residue-separated implementation
+  -> S_total + Exc classifier
+  -> compact packed-index label and mask
 ```
 
-Active references to this folder are allowed because it is included in this ZIP.
+This path should be preserved when future documentation is edited.
 
-The package still avoids active references to missing folders such as:
+## Lapse and nearend safety documentation
+
+The current package documents lapse and nearend features as diagnostic and audit
+features.
 
 ```text
-src/
-scripts/
-results/
-data/
+lapse:
+  downstream of tau_g
+
+nearend tau:
+  requires predecessor endpoint/certificate data
+
+window priority:
+  may reorder candidates
+  must not delete candidates without certificate
 ```
 
-unless those folders are later restored.
+The detailed safety rules are in:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```

@@ -189,3 +189,45 @@ Known scope:
   finite computation only
   no infinite theorem claimed
   no proof of Goldbach conjecture claimed
+
+
+Formal definition reference:
+  docs/11_formal_definitions_c0c2cm.md
+
+Important:
+  C0/C2/CM is an implementation and diagnostic mask layer.
+  The safe theorem route is S(x)+Exc(x).
+  The one-byte record does not fully store S_total, sp(x), Exc(x), or
+  the P_def=193 killed/P-rough split.
+
+
+Derivation path:
+  tau endpoint scan
+  -> endpoint composite marks
+  -> C0/C2/CM residue-separated implementation
+  -> S_total + Exc classifier
+  -> packed index label and mask
+
+Meaning:
+  tau endpoint scan supplies the operational endpoint values q and x.
+  C0/C2/CM records residue-separated composite routes for endpoint values.
+  The safe theorem route is S_total + Exc.
+  The packed index stores the compact result/cache, not the full proof object.
+
+
+Lapse and nearend scope:
+  The packed index is not a full lapse or nearend tau proof archive.
+
+  Diagnostic features may be used for:
+    long-tail analysis
+    pair_CC
+    q_any
+    x_any
+    pair_anyany
+    window priority
+
+  They must not be used to delete candidates without certificate.
+
+  Required invariants:
+    false_skip_j = 0
+    P_UNKNOWN_used_as_prime = 0

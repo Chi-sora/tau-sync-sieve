@@ -357,3 +357,119 @@ A_K vs A_PR
 
 This limitation is diagnostic, not a contradiction in the arithmetic
 prime/semiprime/almost-prime classification.
+
+## Current formal correction: S(x)+Exc(x)
+
+The historical `classify5` flow and the current packed-index route must be
+read with the corrected formal definitions in:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```
+
+The safe theorem route is:
+
+```text
+S(x):
+  count distinct prime divisors p with p >= 5, p*p <= x, and p | x
+
+Exc(x):
+  when S(x)=1, the unique counted prime p satisfies p*p | x and x != p*p
+```
+
+For `x > 3` and `gcd(x,6)=1`:
+
+```text
+S(x)=0:
+  Prime
+
+S(x)>=2:
+  Almost
+
+S(x)=1 and Exc(x):
+  Almost
+
+S(x)=1 and not Exc(x):
+  Prime or Semi
+  Semi under the composite precondition
+```
+
+C0/C2/CM is the residue-separated implementation of this theorem route:
+
+```text
+S_total = S_C0 + S_C2 + S_CM
+```
+
+Do not use a single residue-only rule as the global theorem.
+
+```text
+unsafe:
+  C2_only -> Semi
+
+safe:
+  S_total + Exc
+```
+
+The current packed index records a compact mask:
+
+```text
+C0/C2/CM/PR
+```
+
+It does not fully record:
+
+```text
+S_C0 count
+S_C2 count
+S_CM count
+S_total
+sp(x)
+Exc witness
+P_def=193 killed/P-rough split
+```
+
+Therefore nearend labels such as:
+
+```text
+S_K
+S_PR
+A_K
+A_PR
+tau_shadow
+tau_eclipse
+tau_fury
+```
+
+require sidecar data, extra bits/classes, recomputation, or a trusted
+certificate table.
+
+## Lapse and priority safety
+
+C0/C2/CM-derived lapse features are useful for diagnostics and priority.
+
+```text
+useful for:
+  long-tail analysis
+  pair_CC
+  q_any
+  x_any
+  pair_anyany
+  window priority
+```
+
+They are not skip proofs.
+
+```text
+priority:
+  may reorder candidates
+
+priority:
+  must not delete candidates without certificate
+```
+
+Required invariants:
+
+```text
+false_skip_j = 0
+P_UNKNOWN_used_as_prime = 0
+```

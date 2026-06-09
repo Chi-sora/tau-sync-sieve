@@ -56,9 +56,9 @@ tau:
 
 A residue candidate is not a prime fact and is not a tau value.
 
-## Planned command interface
+## Current command interface
 
-Code will be added separately.  The planned Windows command interface is:
+The current Windows/MinGW implementation is included in `tau_c0c2cm_index/`.  The command interface is:
 
 ```bat
 build.bat
@@ -130,6 +130,61 @@ resolved_label:
   label printed by query after optional factor-2/factor-3 cofactor resolution
 ```
 
+## C0/C2/CM formal clarification
+
+The derivation path is:
+
+```text
+tau endpoint scan
+  -> endpoint composite marks
+  -> C0/C2/CM residue-separated implementation
+  -> S_total + Exc
+  -> packed index label and mask
+```
+
+```text
+safe theorem:
+  S(x) + Exc(x)
+
+implementation:
+  S_C0(x), S_C2(x), S_CM(x)
+
+diagnostics:
+  C0/C2/CM route marks and lapse features
+```
+
+`C0/C2/CM` is the residue-separated implementation and diagnostic layer.  It is
+not, by itself, the full theorem witness.  The current one-byte packed record
+does not store exact `S_total`, `sp(x)`, `Exc(x)`, or the `P_def=193`
+killed/P-rough split.
+
+See:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```
+
+## Lapse and diagnostic safety
+
+```text
+lapse:
+  downstream of tau_g
+
+C0/C2/CM lapse features:
+  diagnostic and priority features
+
+window priority:
+  may reorder candidates
+  must not delete candidates without certificate
+```
+
+The current one-byte packed index is not a full lapse/nearend tau proof archive.
+See:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```
+
 ## Documentation
 
 ```text
@@ -143,6 +198,7 @@ docs/07_classifier_and_parameters.md
 docs/08_packed_index_format.md
 docs/09_documentation_notes.md
 docs/10_tau_c0c2cm_index.md
+docs/11_formal_definitions_c0c2cm.md
 ```
 
 ## License

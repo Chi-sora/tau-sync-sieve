@@ -130,6 +130,60 @@ resolved_label:
   query時に factor 2 / factor 3 を剥がして表示されるlabel
 ```
 
+## C0/C2/CM formal clarification
+
+導出経路は次です。
+
+```text
+tau endpoint scan
+  -> endpoint composite marks
+  -> C0/C2/CM residue-separated implementation
+  -> S_total + Exc
+  -> packed index label and mask
+```
+
+```text
+safe theorem:
+  S(x) + Exc(x)
+
+implementation:
+  S_C0(x), S_C2(x), S_CM(x)
+
+diagnostics:
+  C0/C2/CM route marks and lapse features
+```
+
+`C0/C2/CM` は residue-separated implementation and diagnostic layer です。
+それ単体は full theorem witness ではありません。現在の 1-byte packed record は、
+正確な `S_total`, `sp(x)`, `Exc(x)`, `P_def=193` killed/P-rough split を保存しません。
+
+参照:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```
+
+## Lapse and diagnostic safety
+
+```text
+lapse:
+  tau_g の downstream
+
+C0/C2/CM lapse features:
+  diagnostic and priority features
+
+window priority:
+  candidate の順序変更は可
+  certificate なしの削除は不可
+```
+
+現在の 1-byte packed index は full lapse/nearend tau proof archive ではありません。
+参照:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```
+
 ## 文書
 
 ```text
@@ -143,6 +197,7 @@ docs/07_classifier_and_parameters.md
 docs/08_packed_index_format.md
 docs/09_documentation_notes.md
 docs/10_tau_c0c2cm_index.md
+docs/11_formal_definitions_c0c2cm.md
 ```
 
 ## ライセンス

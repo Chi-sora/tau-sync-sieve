@@ -254,3 +254,45 @@ record_size:
 ```
 
 If `main.c` changes these values, this document must be updated in the same commit.
+
+## Formal-classification storage limits
+
+The packed record is intentionally compact.
+
+```text
+stored:
+  P/S/A/O/U label
+  C0/C2/CM/PR mask
+
+not fully stored:
+  S_C0(x)
+  S_C2(x)
+  S_CM(x)
+  S_total(x)
+  sp(x)
+  Exc(x)
+  P_def=193 killed/P-rough split
+```
+
+The safe theorem route is documented in:
+
+```text
+docs/11_formal_definitions_c0c2cm.md
+```
+
+Summary:
+
+```text
+safe theorem:
+  S(x) + Exc(x)
+
+implementation:
+  S_C0/S_C2/S_CM
+
+diagnostics:
+  C0/C2/CM/PR mask
+```
+
+A query may resolve `P/S/A` for many values, but the one-byte record alone
+should not be treated as a complete proof object for all diagnostic or nearend
+tau labels.
