@@ -12,9 +12,9 @@ cmd.exe
 
 No Python is required for the planned C index-builder path.
 
-## Current planned packed-index path
+## Packed-index path
 
-Code will be added separately.  The intended command path is:
+The implementation is included in `tau_c0c2cm_index/`.  The command path is:
 
 ```bat
 build.bat

@@ -56,9 +56,9 @@ tau:
 
 residue candidate は prime fact ではなく、tau value でもありません。
 
-## 予定command interface
+## Command interface
 
-コードはあとで追加します。予定している Windows command interface は次です。
+実装は `tau_c0c2cm_index/` に同梱しています。Windows command interface は次です。
 
 ```bat
 build.bat
@@ -161,6 +161,7 @@ diagnostics:
 
 ```text
 docs/11_formal_definitions_c0c2cm.md
+docs/12_arithmetization_corrections.md
 ```
 
 ## Lapse and diagnostic safety

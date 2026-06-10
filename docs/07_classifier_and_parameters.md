@@ -102,13 +102,19 @@ classify5(x):
 
   1. If C3(x), return C3.
 
-  2. If x has a small prime factor p with 5 <= p <= P_def:
-       y = x / p
+  2. If x has a small prime factor p with 5 <= p <= P_def and p < x
+     (equivalently y = x / p with y >= 2):
 
        if y is prime:
          return S_K
        else:
          return A_K
+
+     The condition p < x matters at the small edge: without it, a
+     prime x with 5 <= x <= P_def would fire this step with p = x
+     and y = 1 and be misrouted to A_K.  With p < x it falls through
+     to step 3 and is labeled P.  For x > P_def the condition is
+     automatic.
 
   3. If x is prime:
        return P
@@ -221,7 +227,7 @@ The included validations are finite computational checks.
 They support the repository definitions and checked datasets, but they do not constitute an infinite theorem or a proof of the Goldbach conjecture.
 
 
-## 13. Packed-index relation to classify5
+## 9. Packed-index relation to classify5
 
 The packed index builder is not required to run the historical `classify5` flow
 for every integer during build.
@@ -242,7 +248,7 @@ query:
 
 This keeps large builds closer to sequential write plus CPU marking.
 
-## 14. S_PR and PR bit
+## 10. S_PR and PR bit
 
 If semiprime or almost-prime information is reached through a P-rough route or
 a factor-2/factor-3 cofactor route, the packed index uses:
@@ -254,7 +260,7 @@ PR bit:
 
 This prevents `S_PR`-like cases from becoming indistinguishable from
 `resmask = 0`.
-## Packed-index sieve vs classify5
+## 11. Packed-index sieve vs classify5
 
 The historical `classify5` definition and the packed-index sieve do not record
 exactly the same diagnostic split.
@@ -358,7 +364,7 @@ A_K vs A_PR
 This limitation is diagnostic, not a contradiction in the arithmetic
 prime/semiprime/almost-prime classification.
 
-## Current formal correction: S(x)+Exc(x)
+## 12. Current formal correction: S(x)+Exc(x)
 
 The historical `classify5` flow and the current packed-index route must be
 read with the corrected formal definitions in:
@@ -390,8 +396,11 @@ S(x)=1 and Exc(x):
   Almost
 
 S(x)=1 and not Exc(x):
-  Prime or Semi
-  Semi under the composite precondition
+  Semi
+
+  established: S(x) >= 1 already implies x is composite, because the
+  counted prime p satisfies 1 < p <= sqrt(x) < x and is therefore a
+  proper divisor.  No composite precondition is needed on this branch.
 ```
 
 C0/C2/CM is the residue-separated implementation of this theorem route:
@@ -443,7 +452,7 @@ tau_fury
 require sidecar data, extra bits/classes, recomputation, or a trusted
 certificate table.
 
-## Lapse and priority safety
+## 13. Lapse and priority safety
 
 C0/C2/CM-derived lapse features are useful for diagnostics and priority.
 

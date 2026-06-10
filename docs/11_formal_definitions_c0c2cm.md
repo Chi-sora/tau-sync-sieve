@@ -156,14 +156,11 @@ Semi(x) <=> |PrimePair(x)| = 1
 For `x > 1`:
 
 ```text
-|PrimePair(x)| = 0
+|PrimePair(x)| = 0  <=>  Prime(x) or Almost(x)
 ```
 
-means:
-
-```text
-x is prime, almost-prime class, or outside the composite-with-Omega>=2 case
-```
+(established: `x > 1` is prime or composite, and composite `x` has
+`|PrimePair(x)| = 1` iff `Semi(x)`.)
 
 Do not state:
 
@@ -448,20 +445,30 @@ if Exc(x):
   Almost(x)
 
 if not Exc(x):
-  Prime(x) or Semi(x)
+  Semi(x)
 ```
 
-Under the composite precondition:
+No composite precondition is needed:
 
 ```text
-S(x)=1 and not Exc(x) -> Semi(x)
+established:
+  S(x) >= 1  ->  x is composite
 ```
 
-Reason:
+because the counted prime `p` satisfies `1 < p <= sqrt(x) < x` and is
+therefore a proper divisor of `x`.  In particular `Prime(x)` is
+impossible under `S(x)=1`.
 
-If `p` divides `x` only once, write `x=p*m`.  Any composite `m` would have a
-prime factor <= sqrt(m) < sqrt(x), giving another counted prime divisor.  Thus
-`m` is 1 or prime.  If `x=p^2`, this is semiprime and not `Exc`.
+Reason for the Semi branch:
+
+If `p` divides `x` only once, write `x=p*m`.  The case `m=1` would give
+`x=p`, hence `S(x)=0` (`p*p <= p` fails), contradicting `S(x)=1`; so
+`m >= 2`.  Since `Unit6(x)`, `gcd(m,6)=1`.  Any composite `m` would have
+a prime factor `q <= sqrt(m) < sqrt(x)` with `q >= 5`, `q != p`, and
+`q*q <= m <= x`, giving another counted prime divisor and contradicting
+`S(x)=1`.  Thus `m` is prime and `x` is semiprime.  If `p*p` divides
+`x`: either `x=p^2`, which is semiprime and not `Exc`, or `x != p^2`,
+which is `Exc` and gives `Omega(x) >= 3`.
 
 ### Theorem 6.5  S(x)+Exc(x) classifier  [established]
 
@@ -478,15 +485,13 @@ S(x) = 1 and Exc(x):
   Almost
 
 S(x) = 1 and not Exc(x):
-  Prime or Semi
-```
-
-With the composite precondition:
-
-```text
-S(x) = 1 and not Exc(x):
   Semi
 ```
+
+The branch needs no composite precondition: `S(x) >= 1` already implies
+`x` is composite (Lemma 6.4).  The precondition remains meaningful only
+in the implementation narrative, where `S_total` arrives via a
+certified-composite path.
 
 This is the safe theorem route.  C0/C2/CM residue labels are implementation and
 diagnostic data for this theorem route.
@@ -604,6 +609,10 @@ The first verified endpoint hit is:
 ```text
 tau_g(N):
   min { j : exists s, GoldbachHit(N,j,s) }
+
+relation to the per-stream values of docs/01 and docs/05:
+  tau_g(N) = min over s of tau_gs(N)
+  with the infinity convention when no hit exists
 ```
 
 Thus `tau_g` is not created by a residue pattern.  It is created only after a

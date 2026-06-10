@@ -31,6 +31,40 @@ This equality transfers the verified `x` fact from source to target.
 
 ## g-sync transfer
 
+Write the lane signs as `q_a(t) = 6t + e_a` and `q_b(j) = 6j + e_b`
+with `e_a, e_b in {+1, -1}`, and `B = N_b - N_a`.
+
+```text
+j_forced(t):
+  t + (B + e_a - e_b) / 6
+  defined iff 6 divides (B + e_a - e_b)
+
+lane compatibility (established):
+  j_forced is an integer  iff  B = e_b - e_a (mod 6)
+
+alignment (established):
+  if j_forced is defined:
+    q_b(j_forced) = q_a(t) + B
+    delta_x(j_forced,t) = 0
+```
+
+Proof of alignment: `q_b(j_forced) = 6t + B + e_a - e_b + e_b
+= q_a(t) + B`; then `x_b(N_b,j_forced) = N_a + B - q_a(t) - B
+= x_a(N_a,t)`.
+
+Consistency check against the validated stream pairs
+(finite validation):
+
+```text
+55 -> 15 and 51 -> 11:  e_a = -1, e_b = +1, e_b - e_a = 2 (mod 6)
+  listed B in {68,74}:  68 = 74 = 2 (mod 6)   consistent
+
+11 -> 51 and 15 -> 55:  e_a = +1, e_b = -1, e_b - e_a = 4 (mod 6)
+  listed B in {70,76}:  70 = 76 = 4 (mod 6)   consistent
+```
+
+The transfer theorem, with minimal premises:
+
 If source has a Goldbach endpoint:
 
 ```text
@@ -39,19 +73,20 @@ G_a(N_a,t):
   and Prime(x_a(N_a,t))
 ```
 
+and the forced index exists in the scan domain:
+
+```text
+6 divides (B + e_a - e_b)
+j_forced(t) >= 1
+```
+
 and target q is prime at the forced position:
 
 ```text
 Prime(q_b(j_forced))
 ```
 
-and:
-
-```text
-delta_x(j_forced,t) = 0
-```
-
-then:
+then by alignment:
 
 ```text
 Prime(x_b(N_b,j_forced))
@@ -69,6 +104,11 @@ Therefore:
 G_b(N_b,j_forced)
 tau_gb(N_b) <= j_forced
 ```
+
+Note that `delta_x(j_forced,t) = 0` need not be listed as a premise:
+it is the alignment lemma.  Likewise `valid_t(a,b,B,t)` is exactly
+`Prime(q_a(t))` (already inside `G_a`) and `Prime(q_a(t)+B)`
+(which equals `Prime(q_b(j_forced))`).
 
 ## valid_t as prime-pair condition
 

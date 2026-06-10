@@ -162,6 +162,7 @@ See:
 
 ```text
 docs/11_formal_definitions_c0c2cm.md
+docs/12_arithmetization_corrections.md
 ```
 
 ## Lapse and diagnostic safety

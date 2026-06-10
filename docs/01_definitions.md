@@ -128,8 +128,12 @@ A tau is a verified first-hit time.
 
 ```text
 tau_Cs(N):
-  min { j : C_s(N,j) holds }
+  min { j >= 1 : C_s(N,j) holds }   if such j exists
+  infinity                           otherwise
 ```
+
+The infinity convention makes tau total. All relations below hold with
+this convention, including the no-hit case.
 
 Important convention:
 
@@ -164,6 +168,9 @@ A lapse is the no-hit prefix associated with a tau.
 ```text
 lapse_Cs(N,J):
   for all j <= J, C_s(N,j) does not hold
+
+lapse_Cs(N,0):
+  true   (empty prefix convention)
 ```
 
 Relation:
@@ -197,12 +204,38 @@ q_fail_s(j):
 
 x_killed_lapse_s(N,j):
   q_s(j) is prime
-  and x_s(N,j) has a factor p with 5 <= p <= P_def
+  and x_s(N,j) has a prime factor p with 5 <= p <= P_def
 
 x_prough_lapse_s(N,j):
   q_s(j) is prime
-  and x_s(N,j) has no factor p with 5 <= p <= P_def
+  and x_s(N,j) has no prime factor p with 5 <= p <= P_def
 ```
+
+The decomposition is exhaustive and exclusive over the lapse prefix
+under the following gates:
+
+```text
+parity gate:
+  N even and q_s(j) odd  ->  x_s(N,j) odd
+
+C3 gate (configuration-dependent):
+  N != q_s(j) mod 3 at scanned indices  ->  3 does not divide x_s(N,j)
+
+positivity gate:
+  the scan is restricted to j with x_s(N,j) >= 5
+```
+
+Within the lapse prefix, the x side is automatically composite:
+
+```text
+established:
+  j < tau_gs(N) and q_s(j) prime and x_s(N,j) >= 5
+    ->  x_s(N,j) is composite
+```
+
+(x prime would give a Goldbach hit at j < tau_gs(N), contradicting
+minimality.)  This is why x_prough_lapse splits into exactly
+S_PR_lapse and A_PR_lapse with no prime case.
 
 Thus, within the checked setting:
 
@@ -222,12 +255,31 @@ delta_x(j,t):
   x_b(N_b,j) - x_a(N_a,t)
 ```
 
-A g-sync event is:
+Write the lane signs as `q_a(t) = 6t + e_a` and `q_b(j) = 6j + e_b`
+with `e_a, e_b in {+1, -1}`, and `B = N_b - N_a`.  The forced index is
+defined explicitly:
+
+```text
+j_forced(t):
+  t + (B + e_a - e_b) / 6
+  defined iff 6 divides (B + e_a - e_b)
+
+lane compatibility (established):
+  j_forced is an integer  iff  B = e_b - e_a (mod 6)
+
+alignment (established):
+  if j_forced is defined:
+    q_b(j_forced) = q_a(t) + B
+    delta_x(j_forced,t) = 0
+```
+
+So `delta_x(j_forced,t) = 0` is a consequence of the definition of
+`j_forced`, not an independent condition.  A g-sync event is:
 
 ```text
 G_a(N_a,t)
 valid_t(a,b,B,t)
-delta_x(j_forced,t) = 0
+6 divides (B + e_a - e_b), j_forced(t) >= 1
 Prime(q_b(j_forced))
 ```
 

@@ -4,7 +4,7 @@ message: "If you use this repository, please cite it as below."
 type: software
 authors:
   - name: Chisora
-license: MIT
+license: MIT  # applies to source code; documentation is CC BY 4.0 (see LICENSE)
 abstract: "A sieve-assisted arithmetic framework based on tau stopping times, lapse prefixes, and sync transfer rules for finite Goldbach endpoint validation."
 keywords:
   - tau-sync sieve
@@ -14,5 +14,5 @@ keywords:
   - tau
   - lapse
   - sync
-version: 0.1.0
-date-released: 2026-06-01
+version: 0.1.2
+date-released: 2026-06-10

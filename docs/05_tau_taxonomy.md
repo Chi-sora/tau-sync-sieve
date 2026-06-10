@@ -74,16 +74,21 @@ General form:
 
 ```text
 tau_Cs(N):
-  min { j : C_s(N,j) holds }
+  min { j >= 1 : C_s(N,j) holds }   if such j exists
+  infinity                           otherwise
 ```
+
+The infinity convention makes tau total (see docs/01).
 
 The main tau values are:
 
 ```text
-tau_qs(N):
+tau_qs:
   min { j : Q_s(j) }
 
   first verified q-prime hit in stream s
+  note: Q_s(j) does not involve N, so this value is N-independent;
+  it is written without the N argument
 ```
 
 ```text
@@ -164,7 +169,14 @@ Fury(x):
 ```text
 Shadow(x):
   x is a killed composite in the project classifier
-  equivalently, x has a small factor p with 5 <= p <= P_def
+  equivalently:
+    x is composite
+    and x has a prime factor p with 5 <= p <= P_def
+
+  the composite gate matters at the small edge: a prime x with
+  5 <= x <= P_def has the factor p = x, but it is not a killed
+  composite; for composite x every prime factor satisfies p < x,
+  so the gated clause is exact
 ```
 
 ```text
@@ -269,9 +281,14 @@ A `g-sync` fact uses:
 ```text
 G_a(N_a,t)
 valid_t(a,b,B,t)
-delta_x(j_forced,t) = 0
+6 divides (B + e_a - e_b), j_forced(t) >= 1
 Prime(q_b(j_forced))
 ```
+
+where `j_forced(t) = t + (B + e_a - e_b)/6` with lane signs
+`e_a, e_b in {+1,-1}`; the equality `delta_x(j_forced,t) = 0` is then
+a consequence of this definition, not an independent condition
+(see docs/01 and docs/02 for the alignment lemma).
 
 Then:
 
